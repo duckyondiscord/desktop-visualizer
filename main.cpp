@@ -82,7 +82,7 @@ void draw(sf::RenderWindow* window) {
 
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
-    rect.setFillColor(sf::Color(255, 0, 205, 191)); // Set RGB color value here
+    rect.setFillColor(sf::Color(255, 0, 205, 191)); // Set RGB color value here (red, green, blue, alpha[opacity])
     window->draw(rect);
   }
 
