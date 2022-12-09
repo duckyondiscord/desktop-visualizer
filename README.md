@@ -25,4 +25,4 @@ $ make
 
  - Allow customization (color, position, size, etc) via config file
  - Add support for other audio sources
- - More visualizer designs?
+ - More visualizer designs (possibly one similar to [cava](https://github.com/karlstav/cava).
