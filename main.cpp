@@ -74,7 +74,7 @@ void draw(sf::RenderWindow* window) {
   sf::Vector2u s = window->getSize();
   window->clear(sf::Color::Transparent);
   
-  for (i = 0; i < 42; i++) {
+  for (i = 0; i < 64; i++) {
     float bar = bars[i];
     float width = (float)s.x / (float)42;
     float height = bar * MAX_HEIGHT;
@@ -82,7 +82,7 @@ void draw(sf::RenderWindow* window) {
 
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
-    rect.setFillColor(sf::Color(0, 255, 255, 255 * bar));
+    rect.setFillColor(sf::Color(255, 0, 205, 191)); // Set RGB color value here
 
     window->draw(rect);
   }
