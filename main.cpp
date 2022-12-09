@@ -12,10 +12,10 @@
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
-float fps = 60;
+float fps = 144;
 int MAX_HEIGHT = 256;
 int WINDOW_WIDTH = 1024;
-float bars[42];
+float bars[64];
 
 Window TransparentWindow () {
   Display* display = XOpenDisplay(NULL);
@@ -94,7 +94,7 @@ void draw(sf::RenderWindow* window) {
 int main () {
   Window win = TransparentWindow();
   sf::RenderWindow window(win);
-  window.setFramerateLimit(60);
+  window.setFramerateLimit(144);
   
   sf::Clock clock;
   pthread_t p_thread;
