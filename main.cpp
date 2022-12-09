@@ -83,7 +83,6 @@ void draw(sf::RenderWindow* window) {
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
     rect.setFillColor(sf::Color(255, 0, 205, 191)); // Set RGB color value here
-
     window->draw(rect);
   }
 
@@ -119,7 +118,7 @@ int main () {
 	}
   getPulseDefaultSink((void*)&audio);
 	thr_id = pthread_create(&p_thread, NULL, input_pulse, (void*)&audio); 
-	audio.rate = 44100;
+	audio.rate = 48000;
 
   // Main Loop
   while (window.isOpen()) {
