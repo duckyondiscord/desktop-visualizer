@@ -82,7 +82,7 @@ void draw(sf::RenderWindow* window) {
 
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
-    rect.setFillColor(sf::Color(255, 0, 205, 153)); // Set RGB color value here (red, green, blue, alpha[opacity])
+    rect.setFillColor(sf::Color(4, 248, 255, 153)); // Set RGB color value here (red, green, blue, alpha[opacity])
     window->draw(rect);
   }
 
@@ -93,7 +93,7 @@ void draw(sf::RenderWindow* window) {
 int main () {
   Window win = TransparentWindow();
   sf::RenderWindow window(win);
-  window.setFramerateLimit(144);
+  window.setFramerateLimit(240);
   
   sf::Clock clock;
   pthread_t p_thread;
