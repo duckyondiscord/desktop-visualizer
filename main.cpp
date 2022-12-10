@@ -12,7 +12,7 @@
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
-float fps = 144;
+float fps = 240;
 int MAX_HEIGHT = 256;
 int WINDOW_WIDTH = 1024;
 float bars[64];
