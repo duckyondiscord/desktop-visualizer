@@ -80,6 +80,7 @@ void draw(sf::RenderWindow* window) {
     float height = bar * MAX_HEIGHT;
     float posY = (s.y / 2) - (height / 2);
 
+    // Create rectangles and set properties
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
     rect.setFillColor(sf::Color(4, 248, 255, 153)); // Set RGB color value here (red, green, blue, alpha[opacity])
