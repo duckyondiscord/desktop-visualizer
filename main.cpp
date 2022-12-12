@@ -87,7 +87,6 @@ void draw(sf::RenderWindow* window) {
   }
 
   window->display();
-  // std::cout << "FPS: " + std::to_string(fps) << std::endl;
 }
 
 int main () {
