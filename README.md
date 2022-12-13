@@ -3,7 +3,7 @@ Linux Desktop Music visualizer made with SFML
 
 ![](screenshot.png)
 
-It's not easily customizable yet, though I've added config options through environment variables, you can find out what those are called by reading `run.sh`.
+It's not easily customizable yet, though I've added config options through environment variables, you can find out what those are called by reading `run.sh`. The binary needs to be in `~/.local/bin/tblvis/` for it to work.
 
 I use some snippets of code from [cava](https://github.com/karlstav/cava) and [conky](https://github.com/brndnmtthws/conky).
 
