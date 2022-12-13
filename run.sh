@@ -5,4 +5,5 @@ export DV_CONF_HEIGHT=256
 export DV_CONF_WIDTH=1024
 
 # Run the executable
+cd ~/.local/bin/tblvis/
 ./tblvis
