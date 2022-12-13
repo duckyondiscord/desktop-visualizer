@@ -11,10 +11,10 @@
 #include "util.cpp"
 #include "input/pulse.h"
 #include "input/pulse.cpp"
-
-float fps = 240;
-int MAX_HEIGHT = 256;
-int WINDOW_WIDTH = 1024;
+if (std::getenv("DV_CONF_FPS") == 0)
+  float fps = atof(std::getenv("DV_CONF_FPS"));
+int MAX_HEIGHT = atoi(std::getenv("DV_CONF_HEIGHT"));
+int WINDOW_WIDTH = atoi(std::getenv("DV_CONF_WIDTH"));
 float bars[64];
 
 Window TransparentWindow () {
