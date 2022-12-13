@@ -3,7 +3,7 @@ Linux Desktop Music visualizer made with SFML
 
 ![](screenshot.png)
 
-It's not easily customizable yet, though you can dig into the source code to change colors, framerate and transparency, it's pretty well-commented.
+It's not easily customizable yet, though I've added config options through environment variables, you can find out what those are called by reading `run.sh`.
 
 I use some snippets of code from [cava](https://github.com/karlstav/cava) and [conky](https://github.com/brndnmtthws/conky).
 
