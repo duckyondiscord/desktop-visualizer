@@ -3,5 +3,5 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Terminal=false
-Exec=bash "~/.local/bin/tblvis/run.sh"
+Exec=~/.local/bin/tblvis/run.sh
 Name=Desktop Visualizer
