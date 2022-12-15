@@ -3,5 +3,5 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Terminal=false
-Exec=/home/ducky/.local/bin/tblvis/run.sh
+Exec=$HOME/.local/bin/tblvis/run.sh
 Name=Desktop Visualizer
