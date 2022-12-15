@@ -11,8 +11,8 @@
 #include "util.cpp"
 #include "input/pulse.h"
 #include "input/pulse.cpp"
-if (std::getenv("DV_CONF_FPS") == 0)
-  float fps = atof(std::getenv("DV_CONF_FPS"));
+
+float fps = atof(std::getenv("DV_CONF_FPS"));
 int MAX_HEIGHT = atoi(std::getenv("DV_CONF_HEIGHT"));
 int WINDOW_WIDTH = atoi(std::getenv("DV_CONF_WIDTH"));
 float bars[64];
