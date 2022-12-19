@@ -93,7 +93,7 @@ void draw(sf::RenderWindow* window) {
 int main () {
   Window win = TransparentWindow();
   sf::RenderWindow window(win);
-  window.setFramerateLimit(240);
+  window.setFramerateLimit(fps);
   
   sf::Clock clock;
   pthread_t p_thread;
