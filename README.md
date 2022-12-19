@@ -29,3 +29,4 @@ Build the project, then run `./install.sh` in the project root. After that, you 
  - Allow customization (color, position, size, etc) via config file
  - Add support for other audio sources
  - More visualizer designs (possibly one similar to [cava](https://github.com/karlstav/cava).)
+ - Gradient option in colors, like [cava](https://github.com/karlstav/cava).
