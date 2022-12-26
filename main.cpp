@@ -68,7 +68,7 @@ Window TransparentWindow () {
 }
 #undef None
 
-void draw(sf::RenderWindow* window) {
+void draw(sf::RenderWindow* window) { // render stuff :D
   int i;
   
   sf::Vector2u s = window->getSize();
