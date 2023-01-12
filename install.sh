@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Copy files to the needed locations and make needed directories
-
+cmake .
+make -j$(nproc --all)
 mkdir -p ~/.local/bin/tblvis/
 mkdir -p ~/.local/share/applications/
 cp ./install/run.sh ~/.local/bin/tblvis/
