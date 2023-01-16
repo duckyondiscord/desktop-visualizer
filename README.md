@@ -12,7 +12,7 @@ I use some snippets of code from [cava](https://github.com/karlstav/cava) and [c
  - PulseAudio
  - fftw3
  - SFML 2.5
-
+ - [libinih](https://github.com/benhoyt/inih)
 # Building
 
 ```
