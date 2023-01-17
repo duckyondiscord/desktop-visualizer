@@ -12,3 +12,4 @@ cp tblvis desktop-visualizer/
 cp -r install/* desktop-visualizer/install
 cp install.sh desktop-visualizer/
 tar -caf $(uname)-$(uname -m).tar.gz desktop-visualizer/*
+rm -rf desktop-visualizer/

@@ -33,4 +33,7 @@ target_link_libraries(${EXECUTABLE_NAME} pulse-simple)
 find_package(Threads)
 target_link_libraries (${EXECUTABLE_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
+# inih
+target_link_libraries (${EXECUTABLE_NAME} INIReader)
+
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)

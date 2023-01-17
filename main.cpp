@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fftw3.h>
 #include <pthread.h>
+#include <INIReader.h>
 #include <math.h>
 #include <time.h>
 #include <SFML/Graphics.hpp>
@@ -12,12 +13,9 @@
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
-float fps = atof(std::getenv("DV_CONF_FPS"));
-int MAX_HEIGHT = atoi(std::getenv("DV_CONF_HEIGHT"));
-int WINDOW_WIDTH = atoi(std::getenv("DV_CONF_WIDTH"));
 float bars[64];
 
-Window TransparentWindow () {
+Window TransparentWindow (int MAX_HEIGHT, int WINDOW_WIDTH) {
   Display* display = XOpenDisplay(NULL);
   XVisualInfo visualinfo;
   XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &visualinfo);
@@ -68,7 +66,7 @@ Window TransparentWindow () {
 }
 #undef None
 
-void draw(sf::RenderWindow* window) { // render stuff :D
+void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue, int alpha) { // render stuff :D
   int i;
   
   sf::Vector2u s = window->getSize();
@@ -83,7 +81,7 @@ void draw(sf::RenderWindow* window) { // render stuff :D
     // Create rectangles and set properties
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
-    rect.setFillColor(sf::Color(4, 248, 255, 153)); // Set RGB color value here (red, green, blue, alpha[opacity])
+    rect.setFillColor(sf::Color(red, green, blue, alpha)); // Set RGB color value here (red, green, blue, alpha[opacity])
     window->draw(rect);
   }
 
@@ -91,7 +89,21 @@ void draw(sf::RenderWindow* window) { // render stuff :D
 }
 
 int main () {
-  Window win = TransparentWindow();
+  
+  std::string homedir = std::getenv("HOME");
+  INIReader reader(homedir + "/.config/deskvis.ini");
+  
+  if(reader.ParseError() < 0)
+  { 
+    std::cerr << "Can't load config file, exiting!\n";
+    return 1;
+  }
+  
+  float fps = reader.GetInteger("window", "fps", 144);
+  int MAX_HEIGHT = reader.GetInteger("window", "height", 256);
+  int WINDOW_WIDTH = reader.GetInteger("window", "width", 1024);
+  
+  Window win = TransparentWindow(MAX_HEIGHT, WINDOW_WIDTH);
   sf::RenderWindow window(win);
   window.setFramerateLimit(fps);
   
@@ -169,7 +181,7 @@ int main () {
     }
 
     // Render
-    draw(&window);
+    draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
     fps = 1 / clock.restart().asSeconds();
   }
 
@@ -180,3 +192,4 @@ int main () {
 
   return 0;
 }
+

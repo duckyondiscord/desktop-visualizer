@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Copy files to the needed locations and make needed directories
+sed "s,~,${HOME}," ./main.cpp > ./main.cpp
 cmake .
 make -j$(nproc --all)
-mkdir -p ~/.local/bin/tblvis/
+mkdir -p ~/.local/bin/
 mkdir -p ~/.local/share/applications/
-cp ./install/run.sh ~/.local/bin/tblvis/
-cp ./tblvis ~/.local/bin/tblvis/
+cp install/deskvis.ini ~/.config/deskvis.ini
+cp -f ./tblvis ~/.local/bin
 sed "s,~,${HOME}," ./install/desktop-visualizer.desktop > $HOME/.local/share/applications/desktop-visualizer.desktop
