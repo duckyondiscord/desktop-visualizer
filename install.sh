@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Copy files to the needed locations and make needed directories
-sed "s,~,${HOME}," ./main.cpp > ./main.cpp
 cmake .
 make -j$(nproc --all)
 mkdir -p ~/.local/bin/
