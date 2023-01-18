@@ -78,10 +78,10 @@ void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue
     float height = bar * MAX_HEIGHT;
     float posY = (s.y / 2) - (height / 2);
 
-    // Create rectangles and set properties
+    // Create rectangles(bars) and set properties
     sf::RectangleShape rect(sf::Vector2f(width, height));
     rect.setPosition(sf::Vector2f(width * i, posY));
-    rect.setFillColor(sf::Color(red, green, blue, alpha)); // Set RGB color value here (red, green, blue, alpha[opacity])
+    rect.setFillColor(sf::Color(red, green, blue, alpha)); // Set RGB color and opacity values
     window->draw(rect);
   }
 
@@ -91,14 +91,15 @@ void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue
 int main () {
   
   std::string homedir = std::getenv("HOME");
-  INIReader reader(homedir + "/.config/deskvis.ini");
+  INIReader reader(homedir + "/.config/deskvis.ini"); // Open config file
   
-  if(reader.ParseError() < 0)
+  if(reader.ParseError() < 0) // Check if we can't load/parse the config file
   { 
     std::cerr << "Can't load config file, exiting!\n";
     return 1;
   }
   
+  // Set necessary variables from the config file
   float fps = reader.GetInteger("window", "fps", 144);
   int MAX_HEIGHT = reader.GetInteger("window", "height", 256);
   int WINDOW_WIDTH = reader.GetInteger("window", "width", 1024);
