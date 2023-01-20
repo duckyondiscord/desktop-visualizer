@@ -25,6 +25,7 @@ Build the project, then run `./install.sh` in the project root. After that, you 
 # Configuration
 
 Configuring the program is really easy, just edit `~/.config/deskvis.ini` after you've installed the program using `install.sh`.
+The syntax is just regular INI syntax, but it's pretty self-explanatory just from looking at the config file.
 
 # TODO
 
