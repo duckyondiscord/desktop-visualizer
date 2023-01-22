@@ -1,11 +1,19 @@
 #!/bin/bash
 
 # Copy files to the needed locations and make needed directories
-cmake .
-make -j$(nproc --all)
+echo "Building project..."
+cmake . > /dev/null 2<&1
+make -j$(nproc --all) > /dev/null 2<&1
+echo "Copying files..."
 mkdir -p ~/.local/bin/
 mkdir -p ~/.local/share/applications/
-cp install/deskvis.ini ~/.config/deskvis.ini
+if [ -a ${HOME}/.config/deskvis.ini ];
+then
+    echo "Config file exists, will not overwrite!"
+else
+    cp install/deskvis.ini ~/.config/deskvis.ini
+fi
+echo "Cleaning up old files..."
 rm -rf ~/.local/bin/tblvis
 cp -f ./tblvis ~/.local/bin
 sed "s,~,${HOME}," ./install/desktop-visualizer.desktop > $HOME/.local/share/applications/desktop-visualizer.desktop
