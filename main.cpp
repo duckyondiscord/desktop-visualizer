@@ -109,7 +109,7 @@ int main () {
   window.setFramerateLimit(fps);
   
   sf::Clock clock;
-  pthread_t p_thread;
+  pthread_t inputThread;
   int i, thr_id, silence, sleep;
   struct timespec req = { .tv_sec = 0, .tv_nsec = 0 };
   struct audio_data audio;
@@ -130,18 +130,11 @@ int main () {
 		audio.audio_out[i] = 0;
 	}
   getPulseDefaultSink((void*)&audio);
-	thr_id = pthread_create(&p_thread, NULL, input_pulse, (void*)&audio); 
-	audio.rate = 48000;
+	thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio); 
+  audio.rate = 48000;
 
   // Main Loop
   while (window.isOpen()) {
-    // Handle Events
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
-      window.close();
-    }
-
     // Copy Audio Data
     silence = 1;
 		for (i = 0; i < 2050; i++) {
@@ -184,11 +177,17 @@ int main () {
     // Render
     draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
     fps = 1 / clock.restart().asSeconds();
+    // Handle Events
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed)
+      window.close();
+    }
   }
 
   // Free resources
   audio.terminate = 1;
-	pthread_join(p_thread, NULL);
+	pthread_join(inputThread, NULL);
   free(audio.source);
 
   return 0;
