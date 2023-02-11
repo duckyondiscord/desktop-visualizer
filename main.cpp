@@ -66,6 +66,25 @@ Window TransparentWindow (int MAX_HEIGHT, int WINDOW_WIDTH) {
 }
 #undef None
 
+void* handleXEvents(void* idk)
+{
+Display* display = XOpenDisplay(NULL);
+XEvent event;
+    XNextEvent(display, &event);
+    switch (event.type) {
+      case Expose:
+        std::cout << "Received Expose event" << std::endl;
+        break;
+      case ButtonPress:
+        std::cout << "Received ButtonPress event" << std::endl;
+        break;
+      case KeyPress:
+        std::cout << "Received KeyPress event" << std::endl;
+        break;
+    }
+  std::cout << "Handled X events\n";
+  return NULL;
+}
 void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue, int alpha) { // render stuff :D
   int i;
   
@@ -110,7 +129,8 @@ int main () {
   
   sf::Clock clock;
   pthread_t inputThread;
-  int i, thr_id, silence, sleep;
+  pthread_t eventThread;
+  int i, thr_id, silence, sleep, XeventThread_id;
   struct timespec req = { .tv_sec = 0, .tv_nsec = 0 };
   struct audio_data audio;
   double in[2050];
@@ -131,6 +151,7 @@ int main () {
 	}
   getPulseDefaultSink((void*)&audio);
 	thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio); 
+  XeventThread_id = pthread_create(&eventThread, NULL, handleXEvents, NULL);
   audio.rate = 48000;
 
   // Main Loop
@@ -187,6 +208,7 @@ int main () {
   // Free resources
   audio.terminate = 1;
 	pthread_join(inputThread, NULL);
+  pthread_join(eventThread, NULL);
   free(audio.source);
 
   return 0;
