@@ -14,9 +14,9 @@
 #include "input/pulse.cpp"
 
 float bars[64];
+Display* display = XOpenDisplay(NULL);
 
 Window TransparentWindow (int MAX_HEIGHT, int WINDOW_WIDTH) {
-  Display* display = XOpenDisplay(NULL);
   XVisualInfo visualinfo;
   XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &visualinfo);
 
@@ -68,8 +68,10 @@ Window TransparentWindow (int MAX_HEIGHT, int WINDOW_WIDTH) {
 
 void* handleXEvents(void* idk)
 {
-Display* display = XOpenDisplay(NULL);
 XEvent event;
+  while(1)
+    {
+    std::cout << "Handled X events\n";
     XNextEvent(display, &event);
     switch (event.type) {
       case Expose:
@@ -82,7 +84,7 @@ XEvent event;
         std::cout << "Received KeyPress event" << std::endl;
         break;
     }
-  std::cout << "Handled X events\n";
+    }
   return NULL;
 }
 void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue, int alpha) { // render stuff :D

@@ -20,6 +20,6 @@ echo "Do you want to disable the \"application not responding\" dialog that appe
 read yesno
 
 if [ $yesno == "y" ]; then
-    gsettings set org.gnome.desktop.wm.preferences auto-raise-delay 0
-
+	gsettings set org.gnome.mutter check-alive-timeout 60000
+	echo "No man is powerful enough to figure out how GNOME tells if an app is responding or not, so I've disabled the dialog for you lmao"
 fi

@@ -116,7 +116,7 @@ void getPulseDefaultSink(void* data) {
 void* input_pulse(void* data)
 {
 
-        struct audio_data *audio = (struct audio_data *)data;
+		struct audio_data *audio = (struct audio_data *)data;
         int i, n;
 	int16_t buf[BUFSIZE / 2];
 
