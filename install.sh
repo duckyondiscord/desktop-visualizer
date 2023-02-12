@@ -2,6 +2,8 @@
 
 # Copy files to the needed locations and make needed directories
 echo "Building project..."
+echo "If this fails, install fftw version 3"
+sleep 3
 cmake . > /dev/null 2<&1
 make -j$(nproc --all) > /dev/null 2<&1
 mkdir -vp ~/.local/bin/
