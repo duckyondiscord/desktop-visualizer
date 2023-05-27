@@ -89,10 +89,10 @@ XEvent event;
 }
 void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue, int alpha) { // render stuff :D
   int i;
-  
+
   sf::Vector2u s = window->getSize();
   window->clear(sf::Color::Transparent);
-  
+
   for (i = 0; i < 64; i++) {
     float bar = bars[i];
     float width = (float)s.x / (float)42;
@@ -110,25 +110,25 @@ void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue
 }
 
 int main () {
-  
+
   std::string homedir = std::getenv("HOME");
   INIReader reader(homedir + "/.config/deskvis.ini"); // Open config file
-  
+
   if(reader.ParseError() < 0) // Check if we can't load/parse the config file
-  { 
+  {
     std::cerr << "Can't load config file, exiting!\n";
     return 1;
   }
-  
+
   // Set necessary variables from the config file
   float fps = reader.GetInteger("window", "fps", 144);
   int MAX_HEIGHT = reader.GetInteger("window", "height", 256);
   int WINDOW_WIDTH = reader.GetInteger("window", "width", 1024);
-  
+
   Window win = TransparentWindow(MAX_HEIGHT, WINDOW_WIDTH);
   sf::RenderWindow window(win);
   window.setFramerateLimit(fps);
-  
+
   sf::Clock clock;
   pthread_t inputThread;
   pthread_t eventThread;
@@ -139,20 +139,20 @@ int main () {
   fftw_complex out[1025][2];
   fftw_plan p = fftw_plan_dft_r2c_1d(2048, in, *out, FFTW_MEASURE);
   int *freq;
-  
+
   // Initialization
   for (i = 0; i < 42; i++) {
-		bars[i] = 0;
-	}
+        bars[i] = 0;
+    }
 
   audio.source = (char*)"auto";
   audio.format = -1;
   audio.terminate = 0;
   for (i = 0; i < 2048; i++) {
-		audio.audio_out[i] = 0;
-	}
+        audio.audio_out[i] = 0;
+    }
   getPulseDefaultSink((void*)&audio);
-	thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio); 
+    thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio);
   XeventThread_id = pthread_create(&eventThread, NULL, handleXEvents, NULL);
   audio.rate = 48000;
 
@@ -160,13 +160,13 @@ int main () {
   while (window.isOpen()) {
     // Copy Audio Data
     silence = 1;
-		for (i = 0; i < 2050; i++) {
-			if (i < 2048) {
-				in[i] = audio.audio_out[i];
-				if (in[i]) silence = 0;
-			} else {
-				in[i] = 0;
-			}
+        for (i = 0; i < 2050; i++) {
+            if (i < 2048) {
+                in[i] = audio.audio_out[i];
+                if (in[i]) silence = 0;
+            } else {
+                in[i] = 0;
+            }
     }
 
     // Check if there was silence
@@ -180,7 +180,7 @@ int main () {
       nanosleep(&req, NULL);
       continue;
     }
-    
+
     // real shit??
     fftw_execute(p);
 
@@ -202,14 +202,14 @@ int main () {
     fps = 1 / clock.restart().asSeconds();
     // Handle Events
     sf::Event event;
-    window.pollEvent(event); 
+    window.pollEvent(event);
       if (event.type == sf::Event::Closed)
       window.close();
   }
 
   // Free resources
   audio.terminate = 1;
-	pthread_join(inputThread, NULL);
+  pthread_join(inputThread, NULL);
   pthread_join(eventThread, NULL);
   free(audio.source);
 
