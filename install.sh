@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copy files to the needed locations and make needed directories
 echo "Building project..."
