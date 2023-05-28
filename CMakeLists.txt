@@ -22,6 +22,7 @@ target_link_libraries(${EXECUTABLE_NAME} sfml-graphics sfml-window sfml-system)
 find_package(FFTW3)
 include_directories(${FFTW3_INCLUDE_DIRS})
 target_link_libraries(${EXECUTABLE_NAME} ${FFTW3_LIBRARIES})
+target_link_directories(${EXECUTABLE_NAME} PUBLIC ${FFTW3_LIBRARY_DIRS})
 
 # PulseAudio
 find_package(PulseAudio)
