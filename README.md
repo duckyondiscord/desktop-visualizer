@@ -1,5 +1,5 @@
 # desktop-visualizer
-Linux Desktop Music visualizer made with SFML
+\*nix desktop audio visualizer made with SFML
 
 ![](screenshot.png)
 
