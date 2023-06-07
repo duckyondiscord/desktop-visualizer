@@ -71,7 +71,6 @@ void* handleXEvents(void* idk)
 XEvent event;
   while(1)
     {
-    std::cout << "Handled X events\n";
     XNextEvent(display, &event);
     switch (event.type) {
       case Expose:
