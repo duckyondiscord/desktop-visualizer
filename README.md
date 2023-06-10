@@ -16,6 +16,7 @@ I use some snippets of code from [cava](https://github.com/karlstav/cava) and [c
  - FreeBSD 13.2
  - Arch Linux
  - postmarketOS
+ 
  Probably will work on any other Unix-like OS that has Xorg and supplies the dependencies
 
 # Building
