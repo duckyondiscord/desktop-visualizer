@@ -47,8 +47,8 @@ Window TransparentWindow (int MAX_HEIGHT, int WINDOW_WIDTH) {
 
   XSizeHints sizehints;
   sizehints.flags = PPosition | PSize;
-  sizehints.x = (sf::VideoMode::getDesktopMode().width / 2) - (WINDOW_WIDTH / 2);
-  sizehints.y = sf::VideoMode::getDesktopMode().height - (MAX_HEIGHT * 2);
+  sizehints.x = (sf::VideoMode::getDesktopMode().width / 2) - (WINDOW_WIDTH);
+  sizehints.y = sf::VideoMode::getDesktopMode().height - (MAX_HEIGHT);
   sizehints.width = WINDOW_WIDTH;
   sizehints.height = MAX_HEIGHT * 2;
   XSetWMNormalHints(display, wnd, &sizehints);
