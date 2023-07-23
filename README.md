@@ -39,3 +39,4 @@ The syntax is just regular INI syntax, but it's pretty self-explanatory just fro
 
  - Add support for other audio sources
  - More visualizer designs (possibly one similar to [cava](https://github.com/karlstav/cava).)
+ - Add live configuration(remove the need for a restart of the app after modifying the config).
