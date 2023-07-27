@@ -86,6 +86,7 @@ XEvent event;
     }
   return NULL;
 }
+
 void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue, int alpha) { // render stuff :D
   int i;
 
@@ -110,8 +111,9 @@ void draw(sf::RenderWindow* window, int MAX_HEIGHT, int red, int green, int blue
 
 int main () {
 
-  std::string homedir = std::getenv("HOME");
-  INIReader reader(homedir + "/.config/deskvis.ini"); // Open config file
+  std::string confFile = std::getenv("HOME");
+  confFile = confFile + "/.config/deskvis.ini";
+  INIReader reader(confFile); // Open config file
 
   if(reader.ParseError() < 0) // Check if we can't load/parse the config file
   {
@@ -131,7 +133,7 @@ int main () {
   sf::Clock clock;
   pthread_t inputThread;
   pthread_t eventThread;
-  int i, thr_id, silence, sleep, XeventThread_id;
+  int i, thr_id, silence, sleep, eventThread_id;
   struct timespec req = { .tv_sec = 0, .tv_nsec = 0 };
   struct audio_data audio;
   double in[2050];
@@ -151,8 +153,8 @@ int main () {
         audio.audio_out[i] = 0;
     }
   getPulseDefaultSink((void*)&audio);
-    thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio);
-  XeventThread_id = pthread_create(&eventThread, NULL, handleXEvents, NULL);
+  thr_id = pthread_create(&inputThread, NULL, input_pulse, (void*)&audio);
+  eventThread_id = pthread_create(&eventThread, NULL, handleXEvents, NULL);
   audio.rate = 48000;
 
   // Main Loop
@@ -197,6 +199,7 @@ int main () {
     }
 
     // Render
+    INIReader reader(confFile);
     draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
     fps = 1 / clock.restart().asSeconds();
     // Handle Events
