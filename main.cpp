@@ -220,6 +220,7 @@ int main()
         }
 
         // Render
+        INIReader reader(confFile);
         draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
         fps = 1 / clock.restart().asSeconds();
         // Handle Events
@@ -228,44 +229,6 @@ int main()
         if (event.type == sf::Event::Closed)
             window.close();
     }
-
-    // Free resources
-    audio.terminate = 1;
-    pthread_join(inputThread, NULL);
-    pthread_join(eventThread, NULL);
-    free(audio.source);
-
-    // real shit??
-    fftw_execute(p);
-
-    for (i = 0; i < 42; i++)
-    {
-        int ab = pow(pow(*out[i * 2][0], 2) + pow(*out[i * 2][1], 2), 0.5);
-        ab = ab + (ab * i / 30);
-        float bar = (float)ab / (float)3500000;
-        if (bar > 1)
-            bar = 1;
-        if (bar > bars[i])
-        {
-            bars[i] = bar;
-        }
-        else
-        {
-            bars[i] -= 1 / fps;
-        }
-        if (bars[i] < 0)
-            bars[i] = 0;
-    }
-
-    // Render
-    INIReader reader(confFile);
-    draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
-    fps = 1 / clock.restart().asSeconds();
-    // Handle Events
-    sf::Event event;
-    window.pollEvent(event);
-    if (event.type == sf::Event::Closed)
-        window.close();
 
     // Free resources
     audio.terminate = 1;
