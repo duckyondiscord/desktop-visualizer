@@ -75,7 +75,7 @@ void draw(SDL_Renderer *rend)
             rect.y = (height / 2) - (h / 2);
             break;
         case BARPOSITION::BAR_TOP:
-            rect.y = 10;
+            rect.y = 0;
             break;
         }
         SDL_RenderFillRect(rend, &rect);
