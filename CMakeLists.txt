@@ -30,8 +30,6 @@ target_link_libraries (${EXECUTABLE_NAME} INIReader)
 
 # SDL2
 find_package (SDL2 REQUIRED)
-find_package (SDL2_ttf REQUIRED)
 target_link_libraries (${EXECUTABLE_NAME} ${SDL2_LIBRARIES})
-target_link_libraries (${EXECUTABLE_NAME} SDL2_ttf)
 
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
