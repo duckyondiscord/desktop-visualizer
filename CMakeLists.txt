@@ -1,22 +1,13 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.7)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif()
 
 project("Desktop Visualizer")
-set(EXECUTABLE_NAME "tblvis")
+set(EXECUTABLE_NAME "visualino")
 
 add_executable(${EXECUTABLE_NAME} main.cpp)
-
-# X11
-find_package(X11)
-include_directories(${X11_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${X11_LIBRARIES})
-
-# SFML
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
-target_link_libraries(${EXECUTABLE_NAME} sfml-graphics sfml-window sfml-system)
 
 # fftw
 find_package(FFTW3)
@@ -36,5 +27,9 @@ target_link_libraries (${EXECUTABLE_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
 # inih
 target_link_libraries (${EXECUTABLE_NAME} INIReader)
+
+# SDL2
+find_package (SDL2 REQUIRED)
+target_link_libraries (${EXECUTABLE_NAME} ${SDL2_LIBRARIES})
 
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
