@@ -8,17 +8,38 @@
 #include <SDL2/SDL_image.h>
 #include "input/pulse.h"
 #include "input/pulse.cpp"
+#include "main.hpp"
 
-float bars[64];
+static int resizingEventWatcher(void *data, SDL_Event *event)
+{
+    if (event->type == SDL_WINDOWEVENT &&
+        event->window.event == SDL_WINDOWEVENT_RESIZED)
+    {
+        SDL_Window *win = SDL_GetWindowFromID(event->window.windowID);
+        if (win == (SDL_Window *)data)
+        {
+            int h, w;
+            SDL_GetWindowSize(win, &w, &h);
+
+            if (w != 0 && h != 0)
+            {
+                width = w;
+                height = h;
+            }
+        }
+    }
+    return 0;
+}
 
 SDL_Window *window()
 {
     SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       800, 600, SDL_WINDOW_RESIZABLE);
+                                       width, 350, SDL_WINDOW_RESIZABLE);
     SDL_Surface *icon = IMG_Load("assets/icon.png");
     SDL_SetWindowIcon(win, icon);
+    SDL_AddEventWatch(resizingEventWatcher, win);
 
     delete icon;
     return win;
@@ -26,7 +47,7 @@ SDL_Window *window()
 
 void ctrl_c(int s)
 {
-    printf("Quitting...\n");
+    printf("\nQuitting...\n");
     exit(0);
 }
 
@@ -39,11 +60,24 @@ void draw(SDL_Renderer *rend)
     for (int i = 0; i < 64; i++)
     {
         float bar = bars[i];
+        float w = width / 60;
+        int h = bar * 256;
         SDL_Rect rect;
-        rect.h = bar * 256;
-        rect.w = 10;
-        rect.x = i * 15 + 20;
-        rect.y = 100;
+        rect.h = h;
+        rect.w = w;
+        rect.x = i * (w + 5) + 20;
+        switch (barposition)
+        {
+        case BARPOSITION::BAR_BOTTOM:
+            rect.y = height - h;
+            break;
+        case BARPOSITION::BAR_MIDDLE:
+            rect.y = (height / 2) - (h / 2);
+            break;
+        case BARPOSITION::BAR_TOP:
+            rect.y = 10;
+            break;
+        }
         SDL_RenderFillRect(rend, &rect);
     }
 }
@@ -163,10 +197,6 @@ int main()
             {
             case SDL_QUIT:
                 close = 1;
-                break;
-            case SDL_WINDOWEVENT_RESIZED:
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
-                std::cout << "resized lol " << std::endl;
                 break;
             }
         }
