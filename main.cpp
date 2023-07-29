@@ -4,148 +4,75 @@
 #include <INIReader.h>
 #include <math.h>
 #include <time.h>
-#include <SFML/Graphics.hpp>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/keysym.h>
-#include <X11/Xutil.h>
-#include "util.cpp"
+#include <SDL2/SDL.h>
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
 float bars[64];
-Display *display = XOpenDisplay(NULL);
 
-Window TransparentWindow(int MAX_HEIGHT, int WINDOW_WIDTH)
+void ctrl_c(int s)
 {
-    XVisualInfo visualinfo;
-    XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &visualinfo);
-
-    // Create window
-    Window wnd;
-    GC gc;
-    XSetWindowAttributes attr;
-    attr.colormap = XCreateColormap(display, DefaultRootWindow(display), visualinfo.visual, AllocNone);
-    attr.event_mask = ExposureMask | KeyPressMask;
-    attr.background_pixmap = None;
-    attr.border_pixel = 0;
-    attr.override_redirect = true;
-    wnd = XCreateWindow(
-        display, DefaultRootWindow(display),
-        (sf::VideoMode::getDesktopMode().width / 2) - (WINDOW_WIDTH / 2),
-        sf::VideoMode::getDesktopMode().height - (MAX_HEIGHT * 2),
-        WINDOW_WIDTH,
-        MAX_HEIGHT * 2,
-        0,
-        visualinfo.depth,
-        InputOutput,
-        visualinfo.visual,
-        CWColormap | CWEventMask | CWBackPixmap | CWBorderPixel,
-        &attr);
-    gc = XCreateGC(display, wnd, 0, 0);
-    XStoreName(display, wnd, "Visualizer");
-
-    XSizeHints sizehints;
-    sizehints.flags = PPosition | PSize;
-    sizehints.x = (sf::VideoMode::getDesktopMode().width / 2) - (WINDOW_WIDTH);
-    sizehints.y = sf::VideoMode::getDesktopMode().height - (MAX_HEIGHT);
-    sizehints.width = WINDOW_WIDTH;
-    sizehints.height = MAX_HEIGHT * 2;
-    XSetWMNormalHints(display, wnd, &sizehints);
-
-    XSetWMProtocols(display, wnd, NULL, 0);
-
-    x11_window_set_desktop(display, wnd);
-    x11_window_set_borderless(display, wnd);
-    x11_window_set_below(display, wnd);
-    x11_window_set_sticky(display, wnd);
-    x11_window_set_skip_taskbar(display, wnd);
-    x11_window_set_skip_pager(display, wnd);
-
-    return wnd;
-}
-#undef None
-
-void *handleXEvents(void *idk)
-{
-    XEvent event;
-    while (1)
-    {
-        XNextEvent(display, &event);
-        switch (event.type)
-        {
-        case Expose:
-            std::cout << "Received Expose event" << std::endl;
-            break;
-        case ButtonPress:
-            std::cout << "Received ButtonPress event" << std::endl;
-            break;
-        case KeyPress:
-            std::cout << "Received KeyPress event" << std::endl;
-            break;
-        }
-    }
-    return NULL;
+    printf("Quitting...\n");
+    exit(0);
 }
 
-void draw(sf::RenderWindow *window, int MAX_HEIGHT, int red, int green, int blue, int alpha)
-{ // render stuff :D
-    int i;
+void draw(SDL_Renderer *rend)
+{
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+    SDL_RenderClear(rend);
 
-    sf::Vector2u s = window->getSize();
-    window->clear(sf::Color::Transparent);
-
-    for (i = 0; i < 64; i++)
+    SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
+    for (int i = 0; i < 64; i++)
     {
         float bar = bars[i];
-        float width = (float)s.x / (float)42;
-        float height = bar * MAX_HEIGHT;
-        float posY = (s.y / 2) - (height / 2);
-
-        // Create rectangles(bars) and set properties
-        sf::RectangleShape rect(sf::Vector2f(width, height));
-        rect.setPosition(sf::Vector2f(width * i, posY));
-        rect.setFillColor(sf::Color(red, green, blue, alpha)); // Set RGB color and opacity values
-        window->draw(rect);
+        SDL_Rect rect;
+        rect.h = bar * 256;
+        rect.w = 10;
+        rect.x = i * 15 + 20;
+        rect.y = 100;
+        SDL_RenderFillRect(rend, &rect);
     }
-
-    window->display();
 }
 
 int main()
 {
+    struct sigaction sigIntHandler;
 
-    std::string confFile = std::getenv("HOME");
-    confFile = confFile + "/.config/deskvis.ini";
-    INIReader reader(confFile); // Open config file
+    sigIntHandler.sa_handler = ctrl_c;
+    sigemptyset(&sigIntHandler.sa_mask);
+    sigIntHandler.sa_flags = 0;
 
-    if (reader.ParseError() < 0) // Check if we can't load/parse the config file
+    sigaction(SIGINT, &sigIntHandler, NULL);
+    // returns zero on success else non-zero
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        std::cerr << "Can't load config file, exiting!\n";
-        return 1;
+        printf("error initializing SDL: %s\n", SDL_GetError());
     }
+    SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
+                                       SDL_WINDOWPOS_CENTERED,
+                                       SDL_WINDOWPOS_CENTERED,
+                                       800, 600, SDL_WINDOW_RESIZABLE);
 
-    // Set necessary variables from the config file
-    float fps = reader.GetInteger("window", "fps", 144);
-    int MAX_HEIGHT = reader.GetInteger("window", "height", 256);
-    int WINDOW_WIDTH = reader.GetInteger("window", "width", 1024);
+    // triggers the program that controls
+    // your graphics hardware and sets flags
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
 
-    Window win = TransparentWindow(MAX_HEIGHT, WINDOW_WIDTH);
-    sf::RenderWindow window(win);
-    window.setFramerateLimit(fps);
+    // creates a renderer to render our images
+    SDL_Renderer *rend = SDL_CreateRenderer(win, -1, render_flags);
 
-    sf::Clock clock;
+    // controls animation loop
+    int close = 0;
+
     pthread_t inputThread;
-    pthread_t eventThread;
-    int i, thr_id, silence, sleep, eventThread_id;
+    int i, thr_id, silence, sleep;
     struct timespec req = {.tv_sec = 0, .tv_nsec = 0};
     struct audio_data audio;
     double in[2050];
     fftw_complex out[1025][2];
     fftw_plan p = fftw_plan_dft_r2c_1d(2048, in, *out, FFTW_MEASURE);
     int *freq;
+    int fps = 60;
 
-    // Initialization
     for (i = 0; i < 42; i++)
     {
         bars[i] = 0;
@@ -160,13 +87,12 @@ int main()
     }
     getPulseDefaultSink((void *)&audio);
     thr_id = pthread_create(&inputThread, NULL, input_pulse, (void *)&audio);
-    eventThread_id = pthread_create(&eventThread, NULL, handleXEvents, NULL);
     audio.rate = 48000;
 
-    // Main Loop
-    while (window.isOpen())
+    // animation loop
+    while (!close)
     {
-        // Copy Audio Data
+
         silence = 1;
         for (i = 0; i < 2050; i++)
         {
@@ -197,7 +123,6 @@ int main()
             continue;
         }
 
-        // real shit??
         fftw_execute(p);
 
         for (i = 0; i < 42; i++)
@@ -213,28 +138,44 @@ int main()
             }
             else
             {
-                bars[i] -= 1 / fps;
+                bars[i] -= 1.05 / fps;
             }
             if (bars[i] < 0)
                 bars[i] = 0;
         }
 
-        // Render
-        INIReader reader(confFile);
-        draw(&window, MAX_HEIGHT, reader.GetInteger("color", "red", 4), reader.GetInteger("color", "green", 248), reader.GetInteger("color", "blue", 0), reader.GetInteger("color", "alpha", 153));
-        fps = 1 / clock.restart().asSeconds();
-        // Handle Events
-        sf::Event event;
-        window.pollEvent(event);
-        if (event.type == sf::Event::Closed)
-            window.close();
+        SDL_Event event;
+
+        // Events management
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                close = 1;
+                break;
+            }
+        }
+
+        draw(rend);
+
+        SDL_RenderPresent(rend);
+
+        SDL_Delay(1000 / fps);
     }
 
-    // Free resources
     audio.terminate = 1;
-    pthread_join(inputThread, NULL);
-    pthread_join(eventThread, NULL);
     free(audio.source);
+    pthread_join(inputThread, NULL);
+
+    // destroy renderer
+    SDL_DestroyRenderer(rend);
+
+    // destroy window
+    SDL_DestroyWindow(win);
+
+    // close SDL
+    SDL_Quit();
 
     return 0;
 }
