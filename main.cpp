@@ -5,10 +5,24 @@
 #include <math.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
 float bars[64];
+
+SDL_Window *window()
+{
+    SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
+                                       SDL_WINDOWPOS_CENTERED,
+                                       SDL_WINDOWPOS_CENTERED,
+                                       800, 600, SDL_WINDOW_RESIZABLE);
+    SDL_Surface *icon = IMG_Load("assets/icon.png");
+    SDL_SetWindowIcon(win, icon);
+
+    delete icon;
+    return win;
+}
 
 void ctrl_c(int s)
 {
@@ -18,7 +32,7 @@ void ctrl_c(int s)
 
 void draw(SDL_Renderer *rend)
 {
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
     SDL_RenderClear(rend);
 
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
@@ -48,11 +62,7 @@ int main()
     {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
-    SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
-                                       SDL_WINDOWPOS_CENTERED,
-                                       SDL_WINDOWPOS_CENTERED,
-                                       800, 600, SDL_WINDOW_RESIZABLE);
-
+    SDL_Window *win = window();
     // triggers the program that controls
     // your graphics hardware and sets flags
     Uint32 render_flags = SDL_RENDERER_ACCELERATED;
@@ -153,6 +163,10 @@ int main()
             {
             case SDL_QUIT:
                 close = 1;
+                break;
+            case SDL_WINDOWEVENT_RESIZED:
+            case SDL_WINDOWEVENT_SIZE_CHANGED:
+                std::cout << "resized lol " << std::endl;
                 break;
             }
         }
