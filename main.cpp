@@ -103,9 +103,11 @@ void ctrl_c(int s)
 void draw(SDL_Renderer *rend)
 {
 
+    // Window color
     SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
     SDL_RenderClear(rend);
 
+    // Visualizer color
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
     for (int i = 0; i < 64; i++)
     {
