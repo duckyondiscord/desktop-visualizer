@@ -44,29 +44,51 @@ SDL_Window *window()
 
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
+
+    int flags;
+    if (windowmode == WINDOW_MODE::BACKGROUND)
+    {
+        flags = SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR;
+    }
+    else
+    {
+        flags = SDL_WINDOW_RESIZABLE;
+    }
+
     SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       width, 350, SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR);
+                                       width, height, flags);
 
-    if (SDL_GetWindowWMInfo(win, &wmInfo) == SDL_TRUE)
+    if (SDL_GetWindowWMInfo(win, &wmInfo) == SDL_TRUE && windowmode == WINDOW_MODE::BACKGROUND)
     {
         std::cout << "Got x11 display and window" << std::endl;
         x11Display = wmInfo.info.x11.display;
         Window x11Window = wmInfo.info.x11.window;
 
-        XSetWMProtocols(x11Display, x11Window, NULL, 0);
+        // adding this doesn't change transparency window
+        // XSizeHints sizehints;
+        // sizehints.flags = PPosition | PSize;
+        // sizehints.x = (deskmode.w / 2) - (width);
+        // sizehints.y = deskmode.h - (height);
+        // sizehints.width = width;
+        // sizehints.height = height;
+        // XSetWMNormalHints(x11Display, x11Window, &sizehints);
+
+        // XSetWMProtocols(x11Display, x11Window, NULL, 0);
 
         x11_window_set_desktop(x11Display, x11Window);
-        x11_window_set_borderless(x11Display, x11Window);
         x11_window_set_below(x11Display, x11Window);
         x11_window_set_sticky(x11Display, x11Window);
-        x11_window_set_skip_taskbar(x11Display, x11Window);
         x11_window_set_skip_pager(x11Display, x11Window);
     }
     SDL_Surface *icon = IMG_Load("assets/icon.png");
     SDL_SetWindowIcon(win, icon);
     SDL_AddEventWatch(resizingEventWatcher, win);
+    if (windowmode == WINDOW_MODE::BACKGROUND)
+    {
+        SDL_SetHint("_NET_WM_WINDOW_OPACITY", "0.5");
+    }
 
     delete icon;
     return win;
@@ -80,6 +102,7 @@ void ctrl_c(int s)
 
 void draw(SDL_Renderer *rend)
 {
+
     SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
     SDL_RenderClear(rend);
 
@@ -143,7 +166,6 @@ int main()
     fftw_complex out[1025][2];
     fftw_plan p = fftw_plan_dft_r2c_1d(2048, in, *out, FFTW_MEASURE);
     int *freq;
-    int fps = 60;
 
     for (i = 0; i < 42; i++)
     {
@@ -243,8 +265,12 @@ int main()
     // destroy renderer
     SDL_DestroyRenderer(rend);
 
-    XCloseDisplay(x11Display);
-    // destroy window
+    if (windowmode == WINDOW_MODE::BACKGROUND)
+    {
+        XCloseDisplay(x11Display);
+    }
+
+    //  destroy window
     SDL_DestroyWindow(win);
 
     // close SDL
