@@ -5,6 +5,7 @@
 #include <math.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 
@@ -16,12 +17,16 @@ void ctrl_c(int s)
     exit(0);
 }
 
-void draw(SDL_Renderer *rend)
+void draw(SDL_Renderer *rend, SDL_Window *win)
 {
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+    // For the window
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+    SDL_SetRenderDrawBlendMode(rend, SDL_BLENDMODE_BLEND);
     SDL_RenderClear(rend);
 
+    // For the fucking rectangles
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
+    SDL_SetWindowOpacity(win, 0.0f);
     for (int i = 0; i < 64; i++)
     {
         float bar = bars[i];
@@ -51,15 +56,14 @@ int main()
     SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       800, 600, SDL_WINDOW_RESIZABLE);
-
+                                       800, 600, SDL_WINDOW_BORDERLESS);
     // triggers the program that controls
     // your graphics hardware and sets flags
     Uint32 render_flags = SDL_RENDERER_ACCELERATED;
 
     // creates a renderer to render our images
     SDL_Renderer *rend = SDL_CreateRenderer(win, -1, render_flags);
-
+    SDL_SetHint("_NET_WM_WINDOW_OPACITY", "0.5");
     // controls animation loop
     int close = 0;
 
@@ -157,7 +161,7 @@ int main()
             }
         }
 
-        draw(rend);
+        draw(rend, win);
 
         SDL_RenderPresent(rend);
 
