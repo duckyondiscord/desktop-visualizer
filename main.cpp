@@ -3,12 +3,20 @@
 #include <pthread.h>
 #include <INIReader.h>
 #include <math.h>
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <X11/keysym.h>
+#include <X11/Xutil.h>
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_syswm.h>
 #include "input/pulse.h"
 #include "input/pulse.cpp"
 #include "main.hpp"
+#include "util.cpp"
+
+Display *x11Display;
 
 static int resizingEventWatcher(void *data, SDL_Event *event)
 {
@@ -33,10 +41,29 @@ static int resizingEventWatcher(void *data, SDL_Event *event)
 
 SDL_Window *window()
 {
+
+    SDL_SysWMinfo wmInfo;
+    SDL_VERSION(&wmInfo.version);
     SDL_Window *win = SDL_CreateWindow("Visualino", // creates a window
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       width, 350, SDL_WINDOW_RESIZABLE);
+                                       width, 350, SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR);
+
+    if (SDL_GetWindowWMInfo(win, &wmInfo) == SDL_TRUE)
+    {
+        std::cout << "Got x11 display and window" << std::endl;
+        x11Display = wmInfo.info.x11.display;
+        Window x11Window = wmInfo.info.x11.window;
+
+        XSetWMProtocols(x11Display, x11Window, NULL, 0);
+
+        x11_window_set_desktop(x11Display, x11Window);
+        x11_window_set_borderless(x11Display, x11Window);
+        x11_window_set_below(x11Display, x11Window);
+        x11_window_set_sticky(x11Display, x11Window);
+        x11_window_set_skip_taskbar(x11Display, x11Window);
+        x11_window_set_skip_pager(x11Display, x11Window);
+    }
     SDL_Surface *icon = IMG_Load("assets/icon.png");
     SDL_SetWindowIcon(win, icon);
     SDL_AddEventWatch(resizingEventWatcher, win);
@@ -91,6 +118,7 @@ int main()
     sigIntHandler.sa_flags = 0;
 
     sigaction(SIGINT, &sigIntHandler, NULL);
+
     // returns zero on success else non-zero
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
@@ -215,6 +243,7 @@ int main()
     // destroy renderer
     SDL_DestroyRenderer(rend);
 
+    XCloseDisplay(x11Display);
     // destroy window
     SDL_DestroyWindow(win);
 

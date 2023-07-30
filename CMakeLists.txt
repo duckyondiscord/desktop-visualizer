@@ -9,6 +9,11 @@ set(EXECUTABLE_NAME "visualino")
 
 add_executable(${EXECUTABLE_NAME} main.cpp)
 
+# X11
+find_package(X11)
+include_directories(${X11_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${X11_LIBRARIES})
+
 # fftw
 find_package(FFTW3)
 include_directories(${FFTW3_INCLUDE_DIRS})
