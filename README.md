@@ -20,16 +20,17 @@ I use some snippets of code from [cava](https://github.com/karlstav/cava) and [c
 
  Probably will work on any other Unix-like OS that has Xorg and supplies the dependencies
 
+# Installation
+
+Download the latest tarball from releases, extract it, run `install.sh` inside it and you're golden! (just don't forget to install the dependencies)
+
 # Building
 
 ```
 $ cmake .
 $ make
 ```
-
-# Installation
-
-Build the project, then run `./install.sh` in the project root. After that, you can execute it using the desktop icon named "Desktop Visualizer" it just created.
+Then run `install.sh` in the project root if you want to also install it.
 
 # Configuration
 
