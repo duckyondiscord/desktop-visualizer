@@ -68,6 +68,8 @@ Window TransparentWindow(int MAX_HEIGHT, int WINDOW_WIDTH)
 
 void *handleXEvents(void *idk)
 {
+    Atom net_wm_ping = XInternAtom(display, "_NET_WM_PING", False);
+
     XEvent event;
     while (1)
     {
@@ -82,6 +84,14 @@ void *handleXEvents(void *idk)
             break;
         case KeyPress:
             std::cout << "Received KeyPress event" << std::endl;
+            break;
+
+        case ClientMessage:
+            if (event.xclient.message_type == net_wm_ping)
+            {
+                std::cout << "Ignoring _NET_WM_PING event" << std::endl;
+                continue;
+            }
             break;
         }
     }
