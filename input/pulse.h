@@ -1,2 +1,2 @@
-void* input_pulse(void* data);
+void *input_pulse(void *data);
 void getPulseDefaultSink();

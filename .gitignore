@@ -10,3 +10,5 @@ CTestTestfile.cmake
 tblvis
 Linux-x86_64.tar.gz
 .ccls_cache
+
+build/
