@@ -18,8 +18,8 @@ rm -rvf ~/.local/bin/tblvis
 cp -vf ./tblvis ~/.local/bin
 sed "s,~,${HOME}," ./install/desktop-visualizer.desktop > $HOME/.local/share/applications/desktop-visualizer.desktop
 
-echo "Do you want to disable the \"application not responding\" dialog that appears on GNOME sometimes with this app? [y/n]"
-read yesno
+#echo "Do you want to disable the \"application not responding\" dialog that appears on GNOME sometimes with this app? [y/n]"
+#read yesno
 
 if [ $yesno == "y" ]; then
 	gsettings set org.gnome.mutter check-alive-timeout 60000
