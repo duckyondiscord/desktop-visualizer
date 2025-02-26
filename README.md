@@ -39,5 +39,6 @@ The syntax is just regular INI syntax, but it's pretty self-explanatory just fro
 
 # TODO
 
+ - IMPORTANT: Port to SFML3
  - Add support for other audio sources
  - More visualizer designs (possibly one similar to [cava](https://github.com/karlstav/cava).)
