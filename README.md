@@ -5,6 +5,8 @@
 
 I use some snippets of code from [cava](https://github.com/karlstav/cava) and [conky](https://github.com/brndnmtthws/conky).
 
+# DO NOT USE ON GNOME, BROKEN AF
+
 # Dependencies
 
  - PulseAudio(for PipeWire you need pipewire-pulse)
