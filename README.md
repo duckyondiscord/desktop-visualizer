@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> Archived in favor of Noctalia's visualizer widget, which I'm using now.
+
 # desktop-visualizer
 \*nix desktop audio visualizer made with SFML
 
